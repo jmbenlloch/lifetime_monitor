@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export PATH="/software/miniconda3/bin:$PATH"
+export LD_LIBRARY_PATH="/software/miniconda3/lib:$LD_LIBRARY_PATH"
+export ICTDIR=/software/IC
+export ICDIR=$ICTDIR/invisible_cities
+export PATH="$ICTDIR/bin:$PATH"
+export PYTHONPATH=$ICTDIR:$PYTHONPATH
+source activate IC3.6
+
+jupyter nbconvert --to notebook --execute $1 --ExecutePreprocessor.timeout=3000
+BASENAME=`echo /home/icuser/lifetime_monitor/current_lifetime.ipynb | rev | cut -c 6- | rev`
+mv "$BASENAME"nbconvert.ipynb $1
