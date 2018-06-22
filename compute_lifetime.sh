@@ -1,16 +1,17 @@
 #!/bin/bash
 
-export PYTHONPATH=$CERESDIR:$PYTHONPATH
-
 sleep_time=$1 # in seconds
-shift
+RUN=$2
 
 while (true)
 do
-    python $CERESDIR/ceres/launch_jobs.py $*
-    sleep 180 #wait for jobs to finish
-    echo "Waiting for jobs to finish"
-    KDSTPATH=`python $CERESDIR/get_ceres_dir $*`
+    #select the latest production for $RUN
+    BASEPATH="/analysis/"$RUN"/hdf5/prod/"
+    ICDIR=`ls -tr $BASEPATH | tail -n1`
+    CERESDIR=`ls -tr $BASEPATH/$ICDIR | tail -n1`
+    KDSTPATH="$BASEPATH/$ICDIR/$CERESDIR/kdst/"
+
+    echo "Taking files from $KDSTPATH"
     NOTEBOOK="/home/icuser/lifetime_monitor/current_lifetime.ipynb"
     cp /home/icuser/lifetime_monitor/Kr_lifetime.ipynb $NOTEBOOK 
     sed -i "s|KDSTPATH|"$KDSTPATH"|g" current_lifetime.ipynb
